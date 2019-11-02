@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+
+  db:
+    image: mysql:5.7
+    container_name: sql_db
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test123
+      MYSQL_ROOT_PASSWORD: test123
+    volumes:
+      - db-data:/var/lib/mysql
+    restart: always
+
+  service:
+    image: watertafel-backend:latest
+    container_name: service
+    ports:
+      - 5000:8080
+    environment:
+      connection.url: jdbc:mysql://db:3306/test
+      connection.username: admin
+      connection.password: test123
+      connection.driver: com.mysql.jdbc.Driver
+    depends_on:
+      - db
+    restart: always
+
+  client:
+    image: frontend:latest
+    container_name: client
+    ports:
+      - 8000:80
+    depends_on:
+      - service
+
+volumes:
+  db-data:

@@ -1,0 +1,19 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: product-service
+
+connection:
+  url: jdbc:mysql://127.0.0.1:3306/test
+  username: admin
+  password: password
+  driver: com.mysql.jdbc.Driver
+
+server:
+  port: 8082
