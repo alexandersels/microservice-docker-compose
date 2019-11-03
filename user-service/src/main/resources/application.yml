@@ -10,10 +10,24 @@ spring:
     name: user-service
 
 connection:
-  url: jdbc:mysql://127.0.0.1:3306/test
-  username: admin
-  password: password
+  url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+  username: root
+  password: root
   driver: com.mysql.jdbc.Driver
 
 server:
   port: 8081
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+---
+# Test profile that is not using the eureka server. ONLY FOR TESTING PURPOSES
+spring:
+  profiles: test
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
