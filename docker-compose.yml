@@ -14,28 +14,83 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     restart: always
+    networks:
+      - backend
 
-  service:
-    image: watertafel-backend:latest
-    container_name: service
+  discovery-service:
+    image: discovery-service:latest
+    container_name: discovery-service
     ports:
-      - 5000:8080
+      - 8761:8761
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - backend
+
+  api-gateway:
+    image: api-gateway:latest
+    container_name: api-gateway
     environment:
+      eureka.server: http://discovery-service:8761/eureka
+      gateway.user-service: http://user-service:8081/
+      gateway.product-service: http://product-service:8082/
       connection.url: jdbc:mysql://db:3306/test
       connection.username: admin
       connection.password: test123
       connection.driver: com.mysql.jdbc.Driver
+    ports:
+      - 9000:8080
     depends_on:
-      - db
-    restart: always
+      - discovery-service
+    networks:
+      - backend
+
+  user-service:
+    image: user-service:latest
+    container_name: user-service
+    environment:
+      eureka.server: http://discovery-service:8761/eureka
+      connection.url: jdbc:mysql://db:3306/test
+      connection.username: admin
+      connection.password: test123
+      connection.driver: com.mysql.jdbc.Driver
+    expose:
+      - 8081
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+
+  product-service:
+    image: product-service:latest
+    container_name: product-service
+    environment:
+      eureka.server: http://discovery-service:8761/eureka
+      connection.url: jdbc:mysql://db:3306/test
+      connection.username: admin
+      connection.password: test123
+      connection.driver: com.mysql.jdbc.Driver
+    expose:
+      - 8082
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
 
   client:
     image: frontend:latest
     container_name: client
     ports:
-      - 8000:80
+      - 8080:80
     depends_on:
-      - service
+      - discovery-service
+    networks:
+      - frontend
 
 volumes:
   db-data:
+
+networks:
+  frontend:
+  backend:

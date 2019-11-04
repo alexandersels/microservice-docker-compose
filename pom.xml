@@ -27,6 +27,7 @@
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
         <swagger.version>2.9.2</swagger.version>
         <lombok.version>1.18.10</lombok.version>
+        <jib.version>1.7.0</jib.version>
     </properties>
 
     <dependencies>
@@ -55,7 +56,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <version>${jib.version}</version>
             </plugin>
         </plugins>
     </build>

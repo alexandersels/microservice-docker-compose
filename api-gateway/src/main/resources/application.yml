@@ -1,16 +1,32 @@
-server:
-  port: 8080
 spring:
   cloud:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8081/
+          uri: ${gateway.user-service:http://localhost:8081/}
           predicates:
             - Path=/user-service/**
         - id: product-service
-          uri: http://localhost:8082/
+          uri: ${gateway.product-service:http://localhost:8082/}
           predicates:
             - Path=/product/**
   application:
     name: gateway-service
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${eureka.server:http://localhost:8761/eureka/}
+---
+# Test profile that is not using the eureka server. ONLY FOR TESTING PURPOSES
+spring:
+  profiles: test
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
